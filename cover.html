@@ -59,9 +59,9 @@
         </div>
       </div>
       <input id="stockSearch" name="stockSearch" class="form-control" type="text" placeholder="Enter desired stock information via stock code: i.e. AAPL" onkeyup="formChanged()"/>
-      <a href="#" class="btn btn-md btn-secondary">Search</a>
+      <a href="#" class="btn btn-md btn-secondary" onclick="openSocket()">Search</a>
       <br>
-      <canvas id="myChart" width="500" height="200"></canvas>
+      <canvas id="myChart" width="600" height="250" style="visibility: hidden"></canvas>
     </main>
 
   <!-- Chart js -->
@@ -70,19 +70,22 @@
 
   <!-- cover custom js -->
   <script type="text/javascript" src="js/cover.js"></script>
+  <script type="text/javascript" src="js/canvas.js"></script>
 
   <!-- Bootstrap -->
   <script type="text/javascript" src="js/bootstrap.js"></script>
 
+  <!-- news.js -->
+  <script type="text/javascript" src="js/news.js"></script>
+
   <!-- fuzzycomplete autocomplete functionality -->
   <script type="text/javascript">
     var companies = [
-      {"companyName":"Aperture Science"},
-      {"companyName":"MomCorp"},
-      {"companyName":"Wayne Enterprises"},
-      {"companyName":"Umbrella Corp"},
-      {"companyName":"Gringotts"},
-      {"companyName":"Globex"}
+      {"stockCode":"AAPL"},
+      {"stockCode":"FB"},
+      {"stockCode":"MSFT"},
+      {"stockCode":"AMZN"},
+      {"stockCode":"GOOGL"}
     ];
 
     console.log(companies);
@@ -98,25 +101,33 @@
       var stockInput = document.getElementById("stockSearch").value;
       var startTime = $('#timeStart').datetimepicker('date');
       var endTime = $('#timeEnd').datetimepicker('date');
-      console.log(stockInput + startTime + endTime);
+      console.log("stockInput: " + stockInput + ", startTime: " + startTime + ", endTime" + endTime);
     }
   </script>
 
   <!-- Emit request for stock data -->
-  <script>
-    var socket = io.connect('ws://demos.kaazing.com/echo');
-    console.log("Socket connection established: " + socket);
-    socket.on('stock_data', function(stockdata) {
-      console.log(stockdata);
-      formChanged();
-      var data = { stockSearch: stockSearch, timeStart: timeStart, timeEnd: timeEnd };
-      console.log(data);
-      socket.emit( 'request_stock_data', data);
-    });
+  <script type="text/javascript">
+    function openSocket() {
+      var requestID = 0;
+      var socket = io.connect('');
+      console.log("Socket connection established: " + socket);
+      socket.on('stock_data', function(stockdata) {
+        var stockInput = document.getElementById("stockSearch").value;
+        var startTime = $('#timeStart').datetimepicker('date');
+        var endTime = $('#timeEnd').datetimepicker('date');
+        console.log("stockInput: " + stockInput + ", startTime: " + startTime + ", endTime: " + endTime);
+        getStockData(stockInput);
+        var data = { "client_request_number": requestID, "request_type": "stock_data", "stockSearch": stockInput, "timeStart": startTime, "timeEnd": endTime };
+        console.log(data);
+        socket.emit( 'request_stock_data', data);
+      });
+      var stockInput = document.getElementById("stockSearch").value;
+      getStockData(stockInput);
+      getNewsData(stockInput);
+      document.getElementById("myChart").style.visibility = "visible";
+    }
   </script>
 
-  <footer class="mastfoot mt-auto">
-  </footer>
 </div>
 </body>
 </html>

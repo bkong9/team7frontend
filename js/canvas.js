@@ -1,9 +1,12 @@
-function callAPIGateway(stockname) {
+function getStockData(stockname) {
 
-  //API Gateway Call
-  $.getJSON('https://cloud.iexapis.com/beta/stock/aapl/chart/1m?token=pk_73b4fd4406b444419faf2232b75ca615',
+  console.log("Getting Stock Data on " + stockname);
+
+  //IEX API 1.0 Chart Call
+  $.getJSON(`https://api.iextrading.com/1.0/stock/${stockname}/chart/1m`,
     function(json_data) {
       this.json_data = json_data;
+      console.log(this.json_data);
 
       var labelArray = [
         this.json_data[json_data.length - 7]["date"],
