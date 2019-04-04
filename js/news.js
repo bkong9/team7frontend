@@ -7,7 +7,6 @@ function getNewsData(stockname) {
 	 	function(json_data) {
 	 		this.json_data = json_data;
 	 		console.log(this.json_data);
-	 		document.getElementById('news_title').innerHTML = this.json_data[0]["news"];
 	 	}
 	);
 }
