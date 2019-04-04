@@ -11,23 +11,6 @@
     <!-- Bootstrap core CSS -->
 	<link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-
     <!-- Custom styles for this template -->
     <link href="css/cover.css" rel="stylesheet">
 
@@ -38,37 +21,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.4.4/fuse.min.js"></script>
 
     <!-- Tempus Dominus -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
 
     <!-- socket.io -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
     <!-- fuzzycomplete -->
     <link rel="stylesheet" href="css/fuzzycomplete.css">
-    <script type="text/javascript" src="fuzzycomplete.js"></script>
+    <script type="text/javascript" src="js/fuzzycomplete.js"></script>
 
 
   </head>
 
   <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-  <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">Stock Search</h3>
-      <nav class="nav nav-masthead justify-content-center">
-        <a class="nav-link active" href="cover.html">Home</a>
-        <a class="nav-link" href="signin.html">Sign In</a>
-        <a class="nav-link" href="dashboard.html">Results</a>
-      </nav>
-    </div>
-  </header>
 
   <main role="main" class="inner cover">
     <h1 class="cover-heading">Stock Wizard</h1>
-    <p class="lead"></p>
-    <p class="lead">
       <div class="row">
         <div class="col-sm-6">
           <div class="input-group date" id="timeStart" data-target-input="nearest">
@@ -88,62 +59,61 @@
         </div>
       </div>
       <input id="stockSearch" name="stockSearch" class="form-control" type="text" placeholder="Enter desired stock information via stock code: i.e. AAPL" onkeyup="formChanged()"/>
-      <a href="dashboard.html" class="btn btn-md btn-secondary">Search</a>
+      <a href="#" class="btn btn-md btn-secondary">Search</a>
+      <br>
+      <canvas id="myChart" width="500" height="200"></canvas>
+    </main>
 
-        <!-- fuzzycomplete -->
-        <script type="text/javascript">
-          var companies = [
-            {"companyName":"Aperture Science"},
-            {"companyName":"MomCorp"},
-            {"companyName":"Wayne Enterprises"},
-            {"companyName":"Umbrella Corp"},
-            {"companyName":"Gringotts"},
-            {"companyName":"Globex"}
-          ];
+  <!-- Chart js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
-          console.log(companies);
+  <!-- cover custom js -->
+  <script type="text/javascript" src="js/cover.js"></script>
 
-          $(document).ready(function(){
-            $("#stockSearch").fuzzyComplete(companies);
-          });
-        </script>
+  <!-- Bootstrap -->
+  <script type="text/javascript" src="js/bootstrap.js"></script>
 
-        <!-- timeStart and timeEnd datetimepicker data -->
-        <script type="text/javascript">
-            $(function () {
-              var startTime = $('#timeStart').datetimepicker('date');
-              var endTime = $('#timeEnd').datetimepicker('date');
-              console.log(startTime);
-              console.log(endTime);
-            });
-        </script>
+  <!-- fuzzycomplete autocomplete functionality -->
+  <script type="text/javascript">
+    var companies = [
+      {"companyName":"Aperture Science"},
+      {"companyName":"MomCorp"},
+      {"companyName":"Wayne Enterprises"},
+      {"companyName":"Umbrella Corp"},
+      {"companyName":"Gringotts"},
+      {"companyName":"Globex"}
+    ];
 
-        <!-- get data from search bar -->
-        <script type="text/javascript">
-          var stockInput = document.getElementById("stockSearch").value;
-          console.log(stockInput);
-        </script>
+    console.log(companies);
 
-        <!-- formChanged function -->
-        <script type="text/javascript">
-          function formChanged() {
-            var stockInput = document.getElementById("stockSearch").value;
-            var startTime = $('#timeStart').datetimepicker('date');
-            var endTime = $('#timeEnd').datetimepicker('date');
-            console.log(stockInput + startTime + endTime);
-          }
-        </script>
+    $(document).ready(function(){
+      $("#stockSearch").fuzzyComplete(companies);
+    });
+  </script>
 
-        <!-- Emit request for stock data -->
-        <script>
-          var socket = io.connect('ws://demos.kaazing.com/echo');
-          console.log("Socket connection established: " + socket);
-          var data = {stockSearch: stockInput}
-          socket.emit( 'request_stock_data', {stockSearch: "stockSearch", timeStart: "timeStart", timeEnd: "timeEnd"});
-        </script>
-      </div>
-    </p>
-  </main>
+  <!-- formChanged function, gets data from forms -->
+  <script type="text/javascript">
+    function formChanged() {
+      var stockInput = document.getElementById("stockSearch").value;
+      var startTime = $('#timeStart').datetimepicker('date');
+      var endTime = $('#timeEnd').datetimepicker('date');
+      console.log(stockInput + startTime + endTime);
+    }
+  </script>
+
+  <!-- Emit request for stock data -->
+  <script>
+    var socket = io.connect('ws://demos.kaazing.com/echo');
+    console.log("Socket connection established: " + socket);
+    socket.on('stock_data', function(stockdata) {
+      console.log(stockdata);
+      formChanged();
+      var data = { stockSearch: stockSearch, timeStart: timeStart, timeEnd: timeEnd };
+      console.log(data);
+      socket.emit( 'request_stock_data', data);
+    });
+  </script>
 
   <footer class="mastfoot mt-auto">
   </footer>

@@ -5,7 +5,6 @@
   //IEX Cloud API Call
   $.getJSON('https://cloud.iexapis.com/beta/stock/aapl/chart/1m?token=pk_73b4fd4406b444419faf2232b75ca615',
     function(json_data) {
-      alert(JSON.stringify(json_data));
       this.json_data = json_data;
       console.log(this.json_data);
 
